@@ -1,0 +1,6 @@
+env: "local_tests"
+storage_path: "./storage/auth.db"
+token_ttl: 1h
+grpc:
+  port: 8082
+  timeout: 30s
