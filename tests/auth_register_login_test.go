@@ -58,6 +58,45 @@ func TestRegisterLogin_HappyPath(t *testing.T) {
 	assert.InDelta(t, logTime.Add(st.Cfg.TokenTTL).Unix(), int64(claims["exp"].(float64)), deltaSec)
 }
 
+func TestRegisterLogin_DoubleRegister(t *testing.T) {
+	ctx, st := suite.New(t)
+
+	email := gofakeit.Email()
+	password := randomPassword()
+
+	respReg, err := st.AuthClient.Register(ctx, &authv1.RegisterRequest{Email: email, Password: password})
+
+	require.NoError(t, err)
+	require.NotEmpty(t, respReg.GetUserId())
+
+	respReg, err = st.AuthClient.Register(ctx, &authv1.RegisterRequest{Email: email, Password: password})
+
+	require.Error(t, err)
+	require.Nil(t, respReg)
+}
+
+func TestRegisterLogin_WrongPassword(t *testing.T) {
+	ctx, st := suite.New(t)
+
+	email := gofakeit.Email()
+	password := randomPassword()
+
+	respReg, err := st.AuthClient.Register(ctx, &authv1.RegisterRequest{Email: email, Password: password})
+
+	require.NoError(t, err)
+	require.NotEmpty(t, respReg.GetUserId())
+
+	password = randomPassword()
+
+	respLog, err := st.AuthClient.LogIn(ctx, &authv1.LoginRequest{
+		Email:    email,
+		Password: password,
+		AppId:    appId,
+	})
+	require.Error(t, err)
+	require.Nil(t, respLog)
+}
+
 func randomPassword() string {
 	return gofakeit.Password(true, true, true, true, false, passDefLen)
 }
