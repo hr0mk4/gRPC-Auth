@@ -23,7 +23,18 @@ Handles user registration and login with hashed passwords and a token-based resp
 - **bcrypt**
 - **JWT**
 
-  ## 📦 API Definition
+## 🚀 How to start
+  Go to [Taskfile.yml](./Taskfile.yml), either download the app Task and run:
+
+```bash
+task mig
+task start
+```
+
+or put corresponding
+  comands directly into the terminal.
+
+## 📦 API Definition
 
 ```proto
 
